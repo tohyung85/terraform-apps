@@ -1,5 +1,13 @@
+terraform {
+  # Require Terraform at least 1.0
+  required_version = ">= 1.0"
+}
+
 provider "aws" {
   region = "us-east-2"
+
+  # Allow any 3.x version of the AWS provider 
+  version = "~> 3.0"
 }
 
 # Partial configuration . The other settings (e.g bucket, region) will be
@@ -11,24 +19,24 @@ terraform {
 }
 
 module "webserver_cluster" {
-  # source = "github.com/tohyung85/terraform-modules//services/webserver-cluster?ref=v0.0.2"
-  source = "../../../../modules/services/webserver-cluster"
+  source = "github.com/tohyung85/terraform-modules//services/hello-world-app?ref=v0.0.3"
+  # source = "../../../../modules/services/hello-world-app"
 
-  cluster_name = "webservers-prod"
+  cluster_name           = "webservers-prod"
   db_remote_state_bucket = "tohyung-learning-terraform"
-  db_remote_state_key = "prod/data-stores/mysql/terraform.tfstate"
+  db_remote_state_key    = "prod/data-stores/mysql/terraform.tfstate"
 
   instance_type = "t2.micro"
-  min_size = 2
-  max_size = 10
+  min_size      = 2
+  max_size      = 10
 
   custom_tags = {
-    Owner = "team-foo"
+    Owner      = "team-foo"
     DeployedBy = "terraform"
   }
 
   enable_autoscaling = true
 
-  ami = "ami-0c55b159cbfafe1f0" 
-  server_text = "Hello, World" 
+  ami         = "ami-0c55b159cbfafe1f0"
+  server_text = "Hello, World"
 }
